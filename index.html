@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Naughty Word Association Game</title>
+  <style>
+    /* CSS styles for the game */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      font-family: 'Georgia', serif;
+      font-size: 36px;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+    
+    .word-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .word-card {
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+      margin: 8px;
+      text-align: center;
+      font-size: 18px;
+      color: #333333;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .word-card:hover {
+      background-color: #f2f2f2;
+    }
+    
+    .option {
+      /* Existing styles */
+    }
+    
+    .correct {
+      background-color: #42b72a; /* Green background color for correct options */
+    }
+    
+    .incorrect {
+      background-color: #e02323; /* Red background color for incorrect options */
+    }
+    
+    #score {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #333333;
+      font-weight: bold;
+      animation: scoreAnimation 4s ease;
+      display: none;
+    }
+    
+    @keyframes scoreAnimation {
+      0% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Naughty Word Association Game</h1>
+  <div class="word-container">
+    <!-- Word card -->
+  </div>
+
+  <div id="score"></div>
+
+  <script>
+    const words = [
+      { word: "Seductive", options: ["Alluring", "Charming", "Tempting"] },
+      { word: "Mischievous", options: ["Playful", "Naughty", "Tricky"] },
+      { word: "Sensual", options: ["Erotic", "Passionate", "Seductive"] },
+      { word: "Provocative", options: ["Challenging", "Daring", "Provocative"] },
+      { word: "Flirtatious", options: ["Charming", "Playful", "Flirtatious"] }
+      // Add more words here
+    ];
+
+    let score = 0;
+    let currentWordIndex = 0;
+    let wordsAnswered = 0;
+
+    // Function to shuffle the array
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Shuffle the words array
+    const shuffledWords = shuffleArray(words);
+
+    // Display the first word and options
+    const wordContainer = document.querySelector('.word-container');
+    const wordCard = document.createElement('div');
+    wordCard.classList.add('word-card');
+
+    const wordDiv = document.createElement('div');
+    wordDiv.classList.add('word');
+    wordDiv.textContent = shuffledWords[currentWordIndex].word;
+
+    const optionsDiv = document.createElement('div');
+    optionsDiv.classList.add('options');
+    shuffledWords[currentWordIndex].options.forEach(option => {
+      const optionDiv = document.createElement('div');
+      optionDiv.classList.add('option');
+      optionDiv.textContent = option;
+      optionsDiv.appendChild(optionDiv);
+
+      optionDiv.addEventListener('click', () => {
+        if (option === shuffledWords[currentWordIndex].options[0]) { // Compare selected option with the first option (assumed to be the correct answer)
+          optionDiv.classList.add('correct');
+          score++; // Increment score if the selected option is correct
+
+          const scoreElement = document.getElementById('score');
+          scoreElement.textContent = 'Wow!';
+          scoreElement.style.display = 'block';
+
+          setTimeout(() => {
+            scoreElement.style.display = 'none';
+          }, 4000);
+        } else {
+          optionDiv.classList.add('incorrect');
+          const scoreElement = document.getElementById('score');
+          scoreElement.textContent = 'Naaaaah re!';
+          scoreElement.style.display = 'block';
+
+          setTimeout(() => {
+            scoreElement.style.display = 'none';
+          }, 4000);
+        }
+
+        wordsAnswered++;
+        currentWordIndex++;
+
+        if (currentWordIndex < shuffledWords.length) {
+          // Remove the current word and options
+          wordDiv.textContent = '';
+          optionsDiv.innerHTML = '';
+
+          // Display the next word and options
+          wordDiv.textContent = shuffledWords[currentWordIndex].word;
+          shuffledWords[currentWordIndex].options.forEach(option => {
+            const optionDiv = document.createElement('div');
+            optionDiv.classList.add('option');
+            optionDiv.textContent = option;
+            optionsDiv.appendChild(optionDiv);
+
+            optionDiv.addEventListener('click', () => {
+              if (option === shuffledWords[currentWordIndex].options[0]) { // Compare selected option with the first option (assumed to be the correct answer)
+                optionDiv.classList.add('correct');
+                score++; // Increment score if the selected option is correct
+
+                const scoreElement = document.getElementById('score');
+                scoreElement.textContent = 'Wow!';
+                scoreElement.style.display = 'block';
+
+                setTimeout(() => {
+                  scoreElement.style.display = 'none';
+                }, 4000);
+              } else {
+                optionDiv.classList.add('incorrect');
+                const scoreElement = document.getElementById('score');
+                scoreElement.textContent = 'Naaaaah re!';
+                scoreElement.style.display = 'block';
+
+                setTimeout(() => {
+                  scoreElement.style.display = 'none';
+                }, 4000);
+              }
+
+              wordsAnswered++;
+              currentWordIndex++;
+
+              if (wordsAnswered === shuffledWords.length) {
+                endGame();
+              }
+            });
+          });
+        } else {
+          endGame();
+        }
+      });
+    });
+
+    wordCard.appendChild(wordDiv);
+    wordCard.appendChild(optionsDiv);
+
+    wordContainer.appendChild(wordCard);
+
+    function endGame() {
+      const scoreElement = document.getElementById('score');
+      scoreElement.textContent = `Final Score: ${score} / ${wordsAnswered}`;
+      scoreElement.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
